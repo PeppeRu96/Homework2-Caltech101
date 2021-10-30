@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # Images
-/101_ObjectCategories
+101_ObjectCategories
