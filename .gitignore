@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # Images
-/Caltech101
+/101_ObjectCategories
