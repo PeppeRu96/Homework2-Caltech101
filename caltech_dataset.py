@@ -21,14 +21,34 @@ class Caltech(VisionDataset):
         self.split = split # This defines the split you are going to use
                            # (split files are called 'train.txt' and 'test.txt')
 
-        '''
-        - Here you should implement the logic for reading the splits files and accessing elements
-        - If the RAM size allows it, it is faster to store all data in memory
-        - PyTorch Dataset classes use indexes to read elements
-        - You should provide a way for the __getitem__ method to access the image-label pair
-          through the index
-        - Labels should start from 0, so for Caltech you will have lables 0...100 (excluding the background class) 
-        '''
+        split_fpath = os.path.join(root, '..', split + '.txt' )
+
+        # Correspondence label int<->str
+        label_str_to_int = {}
+        label_int_to_str = []
+        curr_index = 0
+
+        # Dataset data
+        imgs = []
+        labels = []
+
+        with open(split_fpath, 'r') as f:
+            for line in f:
+                rel_path_splitted = line.split('/')
+                label_str, img_name = rel_path_splitted[0], rel_path_splitted[1]
+                img_path = os.path.join(root, label_str, img_name)
+                img = pil_loader(img_path)
+                
+                # Build a correspondence between integer value label and string label
+                if label_str not in label_str_to_int:
+                    label_str_to_int[label_str] = curr_index
+                    label_int_to_str.append(label_str)
+                    curr_index += 1
+
+                label_int = label_str_to_int[label_str]
+                
+                imgs.append(img)
+                labels.append(label_int)
 
     def __getitem__(self, index):
         '''
@@ -40,9 +60,7 @@ class Caltech(VisionDataset):
             tuple: (sample, target) where target is class_index of the target class.
         '''
 
-        image, label = ... # Provide a way to access image and label via index
-                           # Image should be a PIL Image
-                           # label can be int
+        image, label = self.imgs[index], self.labels[index]
 
         # Applies preprocessing when accessing the image
         if self.transform is not None:
@@ -55,5 +73,5 @@ class Caltech(VisionDataset):
         The __len__ method returns the length of the dataset
         It is mandatory, as this is used by several other components
         '''
-        length = ... # Provide a way to get the length (number of elements) of the dataset
+        length = len(self.imgs)
         return length
