@@ -37,6 +37,7 @@ class Caltech(VisionDataset):
                 rel_path_splitted = line.split('/')
                 label_str, img_name = rel_path_splitted[0], rel_path_splitted[1]
                 img_path = os.path.join(root, label_str, img_name)
+                print(f"img_path: {img_path}")
                 img = pil_loader(img_path)
                 
                 # Build a correspondence between integer value label and string label
